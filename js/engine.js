@@ -22,7 +22,7 @@ let healthTEXT = document.getElementById("health");
 let shieldTEXT = document.getElementById("shield");
 
 function preload() {
-    font_AW = loadFont('../../public/src/font/Audiowide/Audiowide-Regular.ttf');
+    font_AW = loadFont('../src/font/Audiowide/Audiowide-Regular.ttf');
 }
 
 

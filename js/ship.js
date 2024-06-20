@@ -8,8 +8,8 @@ class ship {
 		this.shield = true;
 		this.cd = false;
 		this.hitcd = false;
-		this.png = loadImage("../../public/src/png/ship_normal.png");
-		this.detect = loadImage("../../public/src/png/ship_detect.png");
+		this.png = loadImage("../src/png/ship_normal.png");
+		this.detect = loadImage("../src/png/ship_detect.png");
 
 	}
 	rotate(direc) {
