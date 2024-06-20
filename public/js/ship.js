@@ -14,7 +14,7 @@ class ship {
 	}
 	rotate(direc) {
 		// this.rot = lerp(this.rot, mouseDegree, 0.05);
-		this.heading = atan2(mouseDegree);
+		this.heading = mouseDegree;
 	}
 	shot() {
 		if (frameCount % 30 == 0) {
@@ -24,8 +24,6 @@ class ship {
 
 	}
 	render(detect = false) {
-		push();
-		rotate(this.heading);
 		if (this.shield == false) {
 			if (frameCount % 10 == 0) {
 				return;
@@ -34,34 +32,6 @@ class ship {
 			return;
 		}
 		image(this.png, width / 2, height / 2);
-		// if (detect) {
-		// 	fill(0, 0, 255)
-		// 	push();
-		// 	translate(this.pos.x, this.pos.y);
-		// 	rotate(this.heading + 90);
-		// 	triangle(-24, 20, 0, -70, 24, 20);
-		// 	triangle(-20, 20, 0, -60, 20, 20);
-		// 	triangle(-30, 20, -20, -30, -10, 20);
-		// 	triangle(30, 20, 20, -30, 10, 20);
-		// 	pop();
-		// } else {
-		// 	push();
-		// 	translate(this.pos.x, this.pos.y);
-		// 	rotate(mouseDegree + 90);
-		// 	console.log(mouseDegree)
-		// 	fill("#fe637a");
-		// 	triangle(-24, 20, 0, -70, 24, 20);
-		// 	fill("#41637a");
-		// 	triangle(-20, 20, 0, -60, 20, 20);
-
-		// 	fill("#4cc3e0");
-		// 	triangle(-30, 20, -20, -30, -10, 20);
-
-		// 	fill("#4cc3e0");
-		// 	triangle(30, 20, 20, -30, 10, 20);
-		// 	pop();
-		// }
-
 	}
 	update() {
 		this.rotate();

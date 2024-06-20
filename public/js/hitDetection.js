@@ -53,7 +53,7 @@ function detectBullet() {
             // }
             let pixelColor = pg.get(BulletSystem.bullets[k].pos.x - Scene.verPos.x + windowWidth / 2, BulletSystem.bullets[k].pos.y - Scene.verPos.y + windowHeight / 2);
             if (pixelColor[0] >= 210) {
-                console.log("bulletHit");
+                // console.log("bulletHit");
                 BulletSystem.bullets[k].hit();
                 BulletSystem.bullets[k].broken = true;
                 ShapeSystem.shapes[j].hit(BulletSystem.bullets[k].damage);
