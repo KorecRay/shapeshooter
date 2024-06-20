@@ -1,36 +1,37 @@
 let spREGX = {
     1: {
         id: "1",
-        headingtion: null,
-        basehealh: 5,
-        basespeed: 6,
+        basehealth: 5,
+        basespeed: 3,
         _init: function () {
 
         }
     },
     2: {
         id: "2",
-        basehealth: 3,
-        basespeed: 6,
+        basehealth: 7,
+        basespeed: 3,
         _init: () => {
 
         }
     },
     3: {
         id: "3",
-        basehealth: 2,
-        basespeed: 6,
+        basehealth: 8,
+        basespeed: 3,
         _init: () => {
 
         }
     }
 }
+
 class shape {
     constructor(type, pos, heading) {
         // this.id = spREGX[type].id;
         this.type = type;
         this.size = random(40, 51).toFixed(2);
-        this.health = this.size * spREGX[type].basehealth;
+        this.health = this.size / 5 * spREGX[type].basehealth * (level + 1) / 2;
+        // this.blend
         this.pos = pos;
         this.heading = heading;
         this.speed = spREGX[type].basespeed;
@@ -38,12 +39,19 @@ class shape {
             this.speed
         );
         this.broken = false;
-        this.frame = 0;
+        this.end = millis() + 5000;
     }
     update() {
-        this.frame++;
-        if (this.frame >= 600) {
+        if (millis() > this.end) {
             this.broken = true;
+            return;
+        }
+        if (this.health <= 0) {
+            if (!this.broken) {
+                this.broken = true;
+                score += this.size / 2;
+                console.log(7)
+            }
             return;
         }
         if (this.type == 3) {
@@ -58,37 +66,43 @@ class shape {
         this.pos[0] += this.vel.x;
         this.pos[1] += this.vel.y;
     }
+    hit(damage) {
+        this.health -= damage;
+    }
     render(detect = false) {
+        let vX = this.pos[0] - Scene.verPos.x + windowWidth / 2;
+        let vY = this.pos[1] - Scene.verPos.y + windowHeight / 2;
         if (detect) {
             pg.fill(255, 0, 0)
             switch (this.type) {
                 case 1:
-                    pg.rect(this.pos[0] - Scene.verPos.x + windowWidth / 2, this.pos[1] - Scene.verPos.y + windowHeight / 2, this.size, this.size);
+                    pg.rect(vX, vY, this.size * 2, this.size * 2);
                     break;
                 case 2:
                     pg.push();
-                    pg.translate(this.pos[0] - Scene.verPos.x + windowWidth / 2, this.pos[1] - Scene.verPos.y + windowHeight / 2);
+                    pg.translate(vX, vY);
                     pg.rotate(this.heading);
                     pg.fill(255, 0, 0);
                     pg.triangle(-this.size, this.size, this.size, this.size, 0, -this.size);
                     pg.pop();
                     break;
                 case 3:
-                    pg.circle(this.pos[0] - Scene.verPos.x + windowWidth / 2, this.pos[1] - Scene.verPos.y + windowHeight, this.size);
+                    pg.circle(vX, vY, this.size * 2);
                     break;
             }
             return;
         }
         stroke(230, 230, 230);
+        strokeWeight(2)
         switch (this.type) {
             case 1:
                 fill(252, 141, 81)
-                rect(this.pos[0] - Scene.verPos.x + windowWidth / 2, this.pos[1] - Scene.verPos.y + windowHeight / 2, this.size, this.size);
+                rect(vX, vY, this.size * 2, this.size * 2);
                 break;
             case 2:
                 fill(195, 81, 252)
                 push();
-                translate(this.pos[0] - Scene.verPos.x + windowWidth / 2, this.pos[1] - Scene.verPos.y + windowHeight / 2);
+                translate(vX, vY);
                 rotate(this.heading);
                 fill(255, 0, 0);
                 triangle(-this.size, this.size, this.size, this.size, 0, -this.size);
@@ -96,9 +110,15 @@ class shape {
                 break;
             case 3:
                 fill(120, 214, 99)
-                circle(this.pos[0] - Scene.verPos.x + windowWidth / 2, this.pos[1] - Scene.verPos.y + windowHeight, this.size);
+                circle(vX, vY, this.size * 2);
                 break;
         }
+        strokeWeight(0);
+        textSize(25);
+        fill(255, 255, 255);
+        textAlign(CENTER);
+        stroke(255, 255, 255);
+        text(this.health.toFixed(1), vX, vY)
     }
 
 }
@@ -110,7 +130,7 @@ class shapeSystem {
         this.update = this.update.bind(this);
     }
     createShapes(type) {
-        if (this.shapes.length >= 100) {
+        if (this.shapes.length >= 50) {
             return;
         }
         if (!type) {
@@ -149,10 +169,11 @@ class shapeSystem {
     }
     update() {
         for (let k in this.shapes) {
-            this.shapes[k].update();
             if (this.shapes[k].broken) {
                 this.shapes.splice(k, 1);
+                continue;
             }
+            this.shapes[k].update();
         }
     }
 }

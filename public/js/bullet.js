@@ -2,25 +2,29 @@ class bullet {
 	constructor(pos, heading, speed, damage) {
 		this.pos = pos;
 		this.heading = radians(heading);
+		// this.heading = radians(90);
 		this.speed = speed;
-		console.log(heading)
+		// console.log(heading)
 		this.vel = createVector(cos(this.heading), sin(this.heading)).mult(
 			this.speed
 		);
 		this.damage = damage;
-		this.pos.add(this.vel.copy().mult(10));
-		this.frame = 0;
+		this.pos.add(this.vel.copy().mult(4));
+		this.end = millis() + 1500;
 		this.broken = false;
-		// this.die = setTimeout(this.hitDetection(true), 2500);
 	}
 	update() {
 		this.move();
-		this.frame++
-		if (this.frame >= 150) {
+		if (millis() >= this.end) {
 			this.broken = true;
 		}
 	}
-	render() {
+	render(detect) {
+		if (detect) {
+			pg.fill(0, 0, 255);
+			pg.circle(this.pos.x - Scene.verPos.x + windowWidth / 2, this.pos.y - Scene.verPos.y + windowHeight / 2, 10);
+			return;
+		}
 		noStroke();
 		fill(29, 207, 106);
 		circle(this.pos.x - Scene.verPos.x + windowWidth / 2, this.pos.y - Scene.verPos.y + windowHeight / 2, 10);
@@ -32,7 +36,13 @@ class bullet {
 	move() {
 		this.pos.add(this.vel);
 	}
+	hit() {
+		this.broken = true;
+	}
 	hitDetection(force = false) {
+		// disable hit detection function
+		throw new Error("This function is not implemented and will be removed, try to use the `agent.property.hit()` instead")
+
 		if (force) {
 			return "hit";
 		}
@@ -57,7 +67,7 @@ class bulletSystem {
 		this.recycle = [];
 	}
 	add(pos, heading) {
-		let obj = new bullet(pos, heading, 10);
+		let obj = new bullet(pos, heading, 10, Ship.damage);
 		this.bullets.push(obj);
 	}
 	update() {
@@ -66,14 +76,10 @@ class bulletSystem {
 		}
 		for (let k = 0; k < this.bullets.length; k++) {
 			this.bullets[k].update();
-			// this.bullets[k].hitDetection();
 			this.bullets[k].render();
 			if (this.bullets[k].broken) {
 				this.bullets.splice(k, 1);
 			}
-			// if (this.bullets[k].hitDetection() == "hit") {
-			// 	this.bullets.splice(k, 1);
-			// }
 		}
 	}
 }

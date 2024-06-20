@@ -11,7 +11,15 @@ let cnv, pg
 let gameOver = false
 let isStart = false
 let font_AW
-let score = 0;
+let score = 0
+let level = 0
+
+let SH_time;
+let BU_time;
+
+let scoreTEXT = document.getElementById("score");
+let healthTEXT = document.getElementById("health");
+let shieldTEXT = document.getElementById("shield");
 
 function preload() {
     font_AW = loadFont('../../public/src/font/Audiowide/Audiowide-Regular.ttf');
@@ -23,17 +31,22 @@ function setup() {
     pg = createGraphics(windowWidth, windowHeight);
     imageMode(CENTER);
     rectMode(CENTER);
-    frameRate(30)
+    // !!!!!!!!!!!!!!!
+    frameRate(60)
     Ship = new ship();
     BulletSystem = new bulletSystem();
     ShapeSystem = new shapeSystem();
     Scene = new scene();
     expbar = new ProgressBar(width / 2 - 200, height - 50, 400, 10, 10);
+
+    SH_timer = frameRate*5;
+    BU_timer = frameRate*2;
 }
 
 function fontShake(txt, size, color, posX, posY) {
     let shakeX = random(-2, 2);
     let shakeY = random(-2, 2);
+    noStroke()
     textAlign(CENTER, CENTER);
     textSize(size);
     textFont(font_AW);
@@ -52,6 +65,9 @@ function fontShake(txt, size, color, posX, posY) {
 function draw() {
     if (gameOver) {
         background(25, 25, 25, 10);
+        fontShake("- Game Over -", 100, [232, 221, 63], windowWidth / 2, windowHeight / 2);
+        textSize(30);
+        text(`> score = ${score} <`, windowWidth / 2, windowHeight / 2 + 200);
         return;
     }
     if (!isStart) {
@@ -61,6 +77,11 @@ function draw() {
         fontShake("> click anywhere <", 40, [3, 252, 223], windowWidth / 2, windowHeight / 2 + 200);
         return;
     }
+    scoreTEXT.style.display = "flex";
+    healthTEXT.style.display = "flex";
+    shieldTEXT.style.display = "flex";
+    // =====
+    // =====
     textSize(12)
     textAlign(LEFT, CENTER)
     background(25, 25, 25);
@@ -69,18 +90,24 @@ function draw() {
     Scene.move(calcMove(degrees(atan2(dx, dy))));
     mouseDegree = degrees(atan2(dx, dy))
     // ========================
-    expbar.update();
+    // expbar.update();
     expbar.display();
     Ship.update();
     ShapeSystem.update();
     BulletSystem.update();
     if (frameCount % 10 == 0) {
         ShapeSystem.createShapes();
+        scoreTEXT.innerHTML = `Score: ${score.toFixed(2)}`;
+        healthTEXT.innerHTML = `Health: ${Ship.health}`;
+        shieldTEXT.innerHTML = `Shield: ${Ship.shield}`;
     }
-    if (frameCount % 10 == 0) {
-        score+=5;
+    if (score - level * 500 > 500) {
+        Ship.health += 10;
+        Ship.damage += 8;
+        level++;
     }
     detectShip();
+    detectBullet();
 }
 
 function die() {
@@ -117,27 +144,27 @@ function calcMove(degree) {
     stroke(255, 255, 255)
     strokeWeight(0)
     fill(255, 255, 255);
-    text("mouseDegree: " + degree.toFixed(1), 20, 40);
+    // text("mouseDegree: " + degree.toFixed(1), 20, 40);
     if (degree > 0 && degree <= 90) {
         y = (- (degree - 90)) / 90 * Ship.speed;
         x = degree / 90 * Ship.speed;
-        text(`velx = ${x.toFixed(2)}`, 20, 20)
-        text(`vely = ${y.toFixed(2)}`, 20, 30)
+        // text(`velx = ${x.toFixed(2)}`, 20, 20)
+        // text(`vely = ${y.toFixed(2)}`, 20, 30)
     } else if (degree > 90 && degree <= 180) {
         y = (- (degree - 90)) / 90 * Ship.speed;
         x = ((180 - degree)) / 90 * Ship.speed;
-        text(`velx = ${x.toFixed(2)}`, 20, 20)
-        text(`vely = ${y.toFixed(2)}`, 20, 30)
+        // text(`velx = ${x.toFixed(2)}`, 20, 20)
+        // text(`vely = ${y.toFixed(2)}`, 20, 30)
     } else if (degree > -180 && degree <= -90) {
         y = (degree + 90) / 90 * Ship.speed;
         x = (- (degree + 180)) / 90 * Ship.speed;
-        text(`velx = ${x.toFixed(2)}`, 20, 20)
-        text(`vely = ${y.toFixed(2)}`, 20, 30)
+        // text(`velx = ${x.toFixed(2)}`, 20, 20)
+        // text(`vely = ${y.toFixed(2)}`, 20, 30)
     } else if (degree > -90 && degree <= 0) {
         y = (degree + 90) / 90 * Ship.speed;
         x = degree / 90 * Ship.speed;
-        text(`velx = ${x.toFixed(2)}`, 20, 20)
-        text(`vely = ${y.toFixed(2)}`, 20, 30)
+        // text(`velx = ${x.toFixed(2)}`, 20, 20)
+        // text(`vely = ${y.toFixed(2)}`, 20, 30)
     }
     return createVector(x, y);
     // debug

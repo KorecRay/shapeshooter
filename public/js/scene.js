@@ -6,10 +6,10 @@ class scene {
     }
     move(ver) {
         this.verPos.add(ver);
-        stroke(255, 255, 255)
-        strokeWeight(0)
-        fill(255, 255, 255);
-        text("posX" + this.verPos.x.toFixed(2) + "  ||  posY" + this.verPos.y.toFixed(2), 20, windowHeight - 20);
+        // stroke(255, 255, 255)
+        // strokeWeight(0)
+        // fill(255, 255, 255);
+        //text("posX" + this.verPos.x.toFixed(2) + "  ||  posY" + this.verPos.y.toFixed(2), 20, windowHeight - 20);
         this.draw(ver.x, ver.y);
         // console.log(ver.x, "||", ver.y);
     }
