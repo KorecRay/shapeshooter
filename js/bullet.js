@@ -10,7 +10,7 @@ class bullet {
 		);
 		this.damage = damage;
 		this.pos.add(this.vel.copy().mult(4));
-		this.end = millis() + 1500;
+		this.end = millis() + 2000;
 		this.broken = false;
 	}
 	update() {

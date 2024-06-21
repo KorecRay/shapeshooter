@@ -39,7 +39,7 @@ class shape {
             this.speed
         );
         this.broken = false;
-        this.end = millis() + 5000;
+        this.end = millis() + 8000;
     }
     update() {
         if (millis() > this.end) {
